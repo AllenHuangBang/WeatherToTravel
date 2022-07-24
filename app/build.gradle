@@ -36,7 +36,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion kotlin_compiler_version
     }
     packagingOptions {
         resources {
@@ -59,4 +59,6 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.24.13-rc"
+
 }
