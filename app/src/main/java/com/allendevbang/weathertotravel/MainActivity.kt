@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +19,8 @@ import com.allendevbang.weathertotravel.ui.MainScreen
 import com.allendevbang.weathertotravel.ui.SettingScreen
 import com.allendevbang.weathertotravel.ui.theme.WeatherToTravelTheme
 import com.allendevbang.weathertotravel.ui.topbar.WeatherToTravelTopBar
+import com.allendevbang.weathertotravel.viewmodel.MainScreenViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         WeatherToTravelTopBar(){
-                            
+
                         }
                     },
                     bottomBar = {
