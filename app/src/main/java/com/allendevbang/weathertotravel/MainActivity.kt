@@ -3,26 +3,43 @@ package com.allendevbang.weathertotravel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.allendevbang.weathertotravel.nav.Routes
+import com.allendevbang.weathertotravel.ui.WeatherBottomNav
+import com.allendevbang.weathertotravel.ui.MainScreen
+import com.allendevbang.weathertotravel.ui.SettingScreen
 import com.allendevbang.weathertotravel.ui.theme.WeatherToTravelTheme
+import com.allendevbang.weathertotravel.ui.topbar.WeatherToTravelTopBar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navHostController = rememberNavController()
             WeatherToTravelTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
+                Scaffold(
+                    topBar = {
+                        WeatherToTravelTopBar(){
+                            
+                        }
+                    },
+                    bottomBar = {
+                        WeatherBottomNav(navHostController = navHostController)
+                    },
+                ) { innerPadding ->
+                    WeatherNavHost(
+                        navHostController = navHostController,
+                        innerPadding = innerPadding
+                    )
                 }
             }
         }
@@ -30,14 +47,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    WeatherToTravelTheme {
-        Greeting("Android")
+fun WeatherNavHost(navHostController: NavHostController, innerPadding: PaddingValues) {
+    NavHost(
+        navController = navHostController,
+        startDestination = Routes.MainScreen,
+        modifier = Modifier.padding(innerPadding)
+    ) {
+        composable(Routes.MainScreen) {
+            MainScreen()
+        }
+        composable(Routes.SettingScreen) {
+            SettingScreen()
+        }
     }
 }
