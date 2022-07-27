@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.allendevbang.weathertotravel.nav.Routes
+import com.allendevbang.weathertotravel.ui.DetailScreen
 import com.allendevbang.weathertotravel.ui.WeatherBottomNav
 import com.allendevbang.weathertotravel.ui.MainScreen
 import com.allendevbang.weathertotravel.ui.SettingScreen
@@ -57,10 +59,14 @@ fun WeatherNavHost(navHostController: NavHostController, innerPadding: PaddingVa
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(Routes.MainScreen) {
-            MainScreen()
+            MainScreen(modifier = Modifier.fillMaxSize(), navHostController = navHostController)
         }
         composable(Routes.SettingScreen) {
             SettingScreen()
         }
+        composable(Routes.DetailScreen) {
+            DetailScreen()
+        }
     }
 }
+

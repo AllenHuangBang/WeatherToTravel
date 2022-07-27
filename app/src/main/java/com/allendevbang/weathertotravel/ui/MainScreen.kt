@@ -1,5 +1,6 @@
 package com.allendevbang.weathertotravel.ui
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +24,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.allendevbang.weathertotravel.R
+import com.allendevbang.weathertotravel.api.response.normalweather.Location
+import com.allendevbang.weathertotravel.nav.Routes
 import com.allendevbang.weathertotravel.viewmodel.MainScreenViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,7 +39,9 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier, viewModel: MainScreenViewModel = getViewModel()
+    modifier: Modifier = Modifier,
+    viewModel: MainScreenViewModel = getViewModel(),
+    navHostController: NavHostController
 ) {
     val normalWeatherUiState = viewModel._normalWeatherUiState
     val listState = rememberLazyGridState()
@@ -41,7 +51,7 @@ fun MainScreen(
             listState.firstVisibleItemIndex > 4
         }
     }
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
         if (normalWeatherUiState.isLoading) {
             CircularProgressIndicator()
         }
@@ -53,8 +63,14 @@ fun MainScreen(
             contentPadding = PaddingValues(8.dp),
             state = listState
         ) {
-            val weatherList = normalWeatherUiState.data?.records?.location ?: mutableListOf()
+            val weatherList = normalWeatherUiState.data?.records?.location?.sortedBy { location ->
+                findTheWeatherScore(location = location)
+            } ?: mutableListOf()
+            val weatherGroup = weatherList.groupBy { location ->
+                findTheWeatherScore(location = location)
+            }
             items(items = weatherList) { location ->
+                val sum = findTheWeatherScore(location = location)
                 Box(
                     modifier = Modifier
                         .heightIn(min = 100.dp)
@@ -72,18 +88,18 @@ fun MainScreen(
                         )
                         .fillMaxWidth()
                         .clickable {
-
+                            navHostController.navigate(Routes.DetailScreen)
                         }
                 ) {
-                    Text(
-                        text = location?.locationName ?: "",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    Column(modifier = Modifier.align(Alignment.Center)) {
+                        Text(text = location?.locationName ?: "")
+                    }
+
                 }
             }
         }
         AnimatedVisibility(
-            visible = isFABVisible.value,modifier = Modifier
+            visible = isFABVisible.value, modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(12.dp), enter = slideInVertically(), exit = slideOutVertically()
         ) {
@@ -103,3 +119,12 @@ fun MainScreen(
         }
     }
 }
+
+fun findTheWeatherScore(location: Location?): Int? =
+    location?.weatherElement?.find { weatherElement ->
+        weatherElement?.elementName == "Wx"
+    }?.time?.map { time ->
+        time?.parameter?.parameterValue?.toInt() ?: 0
+    }?.sumOf {
+        it
+    }

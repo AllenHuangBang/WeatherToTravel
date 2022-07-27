@@ -16,7 +16,6 @@ class MainScreenViewModel(val weatherRepo: WeatherRepo) : ViewModel() {
 
     var _normalWeatherUiState by mutableStateOf(NormalWeatherUiState())
         private set
-//    var normalWeatherUiState: State<NormalWeatherUiState> = _normalWeatherUiState
 
     init {
         getNormalWeather()

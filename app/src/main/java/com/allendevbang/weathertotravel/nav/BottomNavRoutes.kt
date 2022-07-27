@@ -6,4 +6,5 @@ sealed class BottomNavRoutes(val route:String) {
 object Routes{
     const val MainScreen = "main_screen"
     const val SettingScreen = "setting_screen"
+    const val DetailScreen = "detail_screen"
 }
