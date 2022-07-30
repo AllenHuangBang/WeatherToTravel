@@ -4,6 +4,8 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -11,7 +13,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.allendevbang.weathertotravel.nav.BottomBarItems
-import com.allendevbang.weathertotravel.nav.Routes
 
 @Composable
 fun WeatherBottomNav(navHostController: NavHostController) {
@@ -30,7 +31,7 @@ fun WeatherBottomNav(navHostController: NavHostController) {
                         restoreState = true
                     }
                 },
-                icon = { Icon(imageVector = barItem.icon, contentDescription = barItem.route) },
+                icon = { Icon(imageVector = barItem.icon?:Icons.Default.Home, contentDescription = barItem.route) },
                 label = { Text(text = stringResource(id = barItem.title)) })
         }
     }

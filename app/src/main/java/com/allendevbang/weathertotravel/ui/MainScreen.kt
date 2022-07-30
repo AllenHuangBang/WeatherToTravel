@@ -1,14 +1,13 @@
 package com.allendevbang.weathertotravel.ui
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -24,15 +23,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.allendevbang.weathertotravel.R
 import com.allendevbang.weathertotravel.api.response.normalweather.Location
-import com.allendevbang.weathertotravel.nav.Routes
+import com.allendevbang.weathertotravel.nav.WeatherToTravelScreen
 import com.allendevbang.weathertotravel.viewmodel.MainScreenViewModel
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -44,57 +40,65 @@ fun MainScreen(
     navHostController: NavHostController
 ) {
     val normalWeatherUiState = viewModel._normalWeatherUiState
-    val listState = rememberLazyGridState()
+    val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val isFABVisible = remember {
         derivedStateOf {
-            listState.firstVisibleItemIndex > 4
+            listState.firstVisibleItemIndex > 2
         }
     }
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         if (normalWeatherUiState.isLoading) {
             CircularProgressIndicator()
         }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+
+        val weatherList = normalWeatherUiState.data?.records?.location?.sortedBy { location ->
+            findTheWeatherScore(location = location)
+        } ?: mutableListOf()
+        val weatherGroup = weatherList.groupBy { location ->
+            findTheWeatherScore(location = location)
+        }
+
+        LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(vertical = 8.dp),
             state = listState
         ) {
-            val weatherList = normalWeatherUiState.data?.records?.location?.sortedBy { location ->
-                findTheWeatherScore(location = location)
-            } ?: mutableListOf()
-            val weatherGroup = weatherList.groupBy { location ->
-                findTheWeatherScore(location = location)
-            }
-            items(items = weatherList) { location ->
-                val sum = findTheWeatherScore(location = location)
-                Box(
-                    modifier = Modifier
-                        .heightIn(min = 100.dp)
-                        .shadow(8.dp, shape = RoundedCornerShape(16.dp))
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(
-                                    MaterialTheme.colors.primary,
-                                    Color.White,
-                                    Color.White,
-                                    Color.White
-                                )
-                            )
-                        )
-                        .fillMaxWidth()
-                        .clickable {
-                            navHostController.navigate(Routes.DetailScreen)
+            items(items = weatherGroup.toList()) { weatherGroup ->
+                Column() {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        items(items = weatherGroup.second) { location ->
+                            Box(
+                                modifier = Modifier
+                                    .sizeIn(minHeight = 100.dp, minWidth = 100.dp)
+                                    .shadow(8.dp, shape = RoundedCornerShape(16.dp))
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(
+                                        brush = Brush.linearGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colors.primary,
+                                                Color.White,
+                                                Color.White,
+                                                Color.White
+                                            )
+                                        )
+                                    )
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        val locationString = Gson().toJson(location)
+                                        navHostController.navigate(WeatherToTravelScreen.DetailScreen.route+"/$locationString",)
+                                    }
+                            ) {
+                                Column(modifier = Modifier.align(Alignment.Center)) {
+                                    Text(text = location?.locationName ?: "")
+                                }
+                            }
                         }
-                ) {
-                    Column(modifier = Modifier.align(Alignment.Center)) {
-                        Text(text = location?.locationName ?: "")
                     }
-
                 }
             }
         }

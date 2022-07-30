@@ -11,9 +11,9 @@ import androidx.compose.ui.res.stringResource
 import com.allendevbang.weathertotravel.R
 
 @Composable
-fun WeatherToTravelTopBar(title: Int = R.string.app_name,onMenuClicked:()->Unit) {
+fun WeatherToTravelTopBar(title: String = stringResource(id = R.string.app_name),onMenuClicked:()->Unit) {
     TopAppBar(title = {
-        Text(text = stringResource(id = title))
+        Text(text = title)
     }, navigationIcon = {
         IconButton(onClick = onMenuClicked) {
             Icon(imageVector = Icons.Filled.Menu, contentDescription = "menu")

@@ -2,4 +2,5 @@
     <string name="app_name">WeatherToTravel</string>
     <string name="main_screen_item_title">首頁</string>
     <string name="setting_screen_item_title">設定</string>
+    <string name="empty"/>
 </resources>
