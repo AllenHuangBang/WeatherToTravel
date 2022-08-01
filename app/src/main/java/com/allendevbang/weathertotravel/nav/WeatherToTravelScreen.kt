@@ -7,13 +7,16 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.allendevbang.weathertotravel.R
 
-sealed class WeatherToTravelScreen(val route: String, @StringRes val title: Int, val icon: ImageVector?) {
-    object MainScreen :
-        WeatherToTravelScreen(
-            Routes.MainScreen,
-            R.string.main_screen_item_title,
-            Icons.Filled.Home
-        )
+sealed class WeatherToTravelScreen(
+    val route: String,
+    @StringRes val title: Int,
+    val icon: ImageVector?
+) {
+    object MainScreen : WeatherToTravelScreen(
+        Routes.MainScreen,
+        R.string.main_screen_item_title,
+        Icons.Filled.Home
+    )
 
     object SettingScreen : WeatherToTravelScreen(
         Routes.SettingScreen,
@@ -34,6 +37,6 @@ sealed class WeatherToTravelScreen(val route: String, @StringRes val title: Int,
     }
 }
 
-object NavParameter{
+object NavParameter {
     val Location = "/{location}"
 }
