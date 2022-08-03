@@ -3,30 +3,32 @@ package com.allendevbang.weathertotravel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.DrawerValue
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.allendevbang.weathertotravel.nav.NavParameter
 import com.allendevbang.weathertotravel.nav.WeatherToTravelScreen
 import com.allendevbang.weathertotravel.ui.DetailScreen
-import com.allendevbang.weathertotravel.ui.WeatherBottomNav
+import com.allendevbang.weathertotravel.ui.botttom_nav.WeatherBottomNav
 import com.allendevbang.weathertotravel.ui.MainScreen
 import com.allendevbang.weathertotravel.ui.SettingScreen
 import com.allendevbang.weathertotravel.ui.theme.WeatherToTravelTheme
 import com.allendevbang.weathertotravel.ui.topbar.WeatherToTravelTopBar
-import com.allendevbang.weathertotravel.util.getNavParameterKey
-import kotlinx.coroutines.flow.collect
+import com.allendevbang.weathertotravel.util.addAsNavParams
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -47,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     },
                     bottomBar = {
                         WeatherBottomNav(navHostController = navHostController)
-                    },
+                    }
                 ) { innerPadding ->
                     WeatherNavHost(
                         navHostController = navHostController,
@@ -85,9 +87,9 @@ fun WeatherNavHost(
         composable(WeatherToTravelScreen.SettingScreen.route) {
             SettingScreen()
         }
-        composable(WeatherToTravelScreen.DetailScreen.route + NavParameter.Location) {
+        composable(WeatherToTravelScreen.DetailScreen.route + WeatherToTravelScreen.DetailScreen.LOCATION.addAsNavParams()) {
             DetailScreen(
-                it.arguments?.getString(NavParameter.Location.getNavParameterKey()),
+                it.arguments?.getString(WeatherToTravelScreen.DetailScreen.LOCATION),
                 titleChange
             )
         }

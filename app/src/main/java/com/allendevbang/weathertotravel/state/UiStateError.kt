@@ -1,5 +1,7 @@
 package com.allendevbang.weathertotravel.state
 
-sealed class UiStateError {
-    object NetworkError : UiStateError()
+import androidx.annotation.StringRes
+
+sealed class UiStateError(@StringRes val stringRes: Int) {
+    class NetworkError(@StringRes stringRes: Int) : UiStateError(stringRes)
 }

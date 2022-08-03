@@ -28,15 +28,13 @@ sealed class WeatherToTravelScreen(
         Routes.DetailScreen,
         R.string.empty,
         Icons.Filled.Home
-    )
+    ) {
+        val LOCATION = "location"
+    }
 
     object Routes {
         val MainScreen = "main_screen"
         val SettingScreen = "setting_screen"
         val DetailScreen = "detail_screen"
     }
-}
-
-object NavParameter {
-    val Location = "/{location}"
 }

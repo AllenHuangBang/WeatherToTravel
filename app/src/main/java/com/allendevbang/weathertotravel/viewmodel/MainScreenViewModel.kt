@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.allendevbang.weathertotravel.api.ResponseResult
 import com.allendevbang.weathertotravel.state.NormalWeatherUiState
-import com.allendevbang.weathertotravel.usecase.WeatherUseCaseImpl
+import com.allendevbang.weathertotravel.usecase.WeatherUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class MainScreenViewModel(val weatherUseCase: WeatherUseCaseImpl) : ViewModel() {
+class MainScreenViewModel(val weatherUseCase: WeatherUseCase) : ViewModel() {
 
     var _normalWeatherUiState by mutableStateOf(NormalWeatherUiState())
         private set
@@ -27,7 +27,7 @@ class MainScreenViewModel(val weatherUseCase: WeatherUseCaseImpl) : ViewModel() 
                     NormalWeatherUiState(data = data.data)
                 }
                 is ResponseResult.Error -> {
-                    NormalWeatherUiState()
+                    NormalWeatherUiState(error = data.uiStateError)
                 }
                 is ResponseResult.Loading -> {
                     NormalWeatherUiState(isLoading = true)

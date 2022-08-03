@@ -1,4 +1,4 @@
-package com.allendevbang.weathertotravel.ui
+package com.allendevbang.weathertotravel.ui.botttom_nav
 
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
