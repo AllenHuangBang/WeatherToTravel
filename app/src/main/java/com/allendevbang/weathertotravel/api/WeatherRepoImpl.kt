@@ -25,7 +25,7 @@ class WeatherRepoImpl(val client: HttpClient) : WeatherRepo {
             )
         } catch (e: Exception) {
             ResponseResult.Error(
-                UiStateError.NetworkError(R.string.network_error)
+                UiStateError.NetworkError()
             )
         }
         return responseResult
